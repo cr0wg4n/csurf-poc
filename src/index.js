@@ -13,15 +13,18 @@ const __dirname = path.dirname(__filename);
 const SECRET_COOKIE = 'ULTRASECRET'
 
 const csrfProtection = csurf({
-  cookie: true,
+  cookie: {
+    // key: '_csrf', 
+    // path: '/',
+    signed: true
+  },
 })
 
 const app = express();
-app.use(cookieParser());
 app.use(cors());
+app.use(cookieParser(SECRET_COOKIE));
 
 app.get('/', csrfProtection, (req, res) => {
-  // res.cookie('XSRF-TOKEN', req.csrfToken(), {signed: true})
   res.cookie('XSRF-TOKEN', req.csrfToken())
   res.sendFile(path.join(__dirname,'index.html'));
 })
